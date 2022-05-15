@@ -30,11 +30,19 @@ qint64 scoreRandomSide(Game game, qint64 iter, QRandomGenerator random)
     return game.getScore();
 }
 
+void clearConsole()
+{
+    std::cout << "\x1B[2J\x1B[H";
+}
+
 int main(int argc, char *argv[])
 {
+    clearConsole();
     QCoreApplication a(argc, argv);
 
-    Game game(5);
+    qint64 sideSize = 4;
+
+    Game game(sideSize);
 
     std::cout << game << std::endl;
 
@@ -91,7 +99,7 @@ int main(int argc, char *argv[])
         {
             game.bottom();
         }
-
+        clearConsole();
         std::cout << game << std::endl;
     }
 
