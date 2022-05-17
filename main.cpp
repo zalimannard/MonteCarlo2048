@@ -47,55 +47,86 @@ int main(int argc, char *argv[])
     std::cout << game << std::endl;
 
     QRandomGenerator random = QRandomGenerator(1);
-    qint64 nIter = 1000;
+    qint64 nIter = 100;
 
     while (!game.isGameOver())
     {
-        Game gameLeft = game;
-        gameLeft.left();
-        qint64 scoreLeft = 0;
-        if (gameLeft != game)
+        qint64 bestSide = 0;
+        qint64 bestScore = 0;
+        for (qint64 i = 0; i < 10; ++i)
         {
-            scoreLeft = scoreRandomSide(gameLeft, nIter, random);
-        }
+            qint64 newSide = random.generate() % 4;
 
-        Game gameTop = game;
-        gameTop.top();
-        qint64 scoreTop = 0;
-        if (gameTop != game)
-        {
-            scoreTop = scoreRandomSide(gameTop, nIter, random);
+            if (newSide == 0)
+            {
+                Game gameLeft = game;
+                gameLeft.left();
+                if (gameLeft != game)
+                {
+                    qint64 score = scoreRandomSide(gameLeft, nIter, random);
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestSide = 0;
+                    }
+                }
+            }
+            else if (newSide == 1)
+            {
+                Game gameTop = game;
+                gameTop.top();
+                if (gameTop != game)
+                {
+                    qint64 score = scoreRandomSide(gameTop, nIter, random);
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestSide = 1;
+                    }
+                }
+            }
+            else if (newSide == 2)
+            {
+                Game gameRight = game;
+                gameRight.right();
+                if (gameRight != game)
+                {
+                    qint64 score = scoreRandomSide(gameRight, nIter, random);
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestSide = 2;
+                    }
+                }
+            }
+            else if (newSide == 3)
+            {
+                Game gameBottom = game;
+                gameBottom.bottom();
+                if (gameBottom != game)
+                {
+                    qint64 score = scoreRandomSide(gameBottom, nIter, random);
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestSide = 3;
+                    }
+                }
+            }
         }
-
-        Game gameRight = game;
-        gameRight.right();
-        qint64 scoreRight = 0;
-        if (gameRight != game)
-        {
-            scoreRight = scoreRandomSide(gameRight, nIter, random);
-        }
-
-        Game gameBottom = game;
-        gameBottom.bottom();
-        qint64 scoreBottom = 0;
-        if (gameBottom != game)
-        {
-            scoreBottom = scoreRandomSide(gameBottom, nIter, random);
-        }
-
-        if ((scoreLeft >= scoreTop) && (scoreLeft >= scoreRight) && (scoreLeft >= scoreBottom))
+        if (bestSide == 0)
         {
             game.left();
         }
-        else if ((scoreTop >= scoreLeft) && (scoreTop >= scoreRight) && (scoreTop >= scoreBottom))
+        else if (bestSide == 1)
         {
             game.top();
         }
-        else if ((scoreRight >= scoreLeft) && (scoreRight >= scoreTop) && (scoreRight >= scoreBottom))
+        else if (bestSide == 2)
         {
             game.right();
         }
-        else if ((scoreBottom >= scoreLeft) && (scoreBottom >= scoreTop) && (scoreBottom >= scoreRight))
+        else if (bestSide == 3)
         {
             game.bottom();
         }
